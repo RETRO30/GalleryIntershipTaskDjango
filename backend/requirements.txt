@@ -1,0 +1,16 @@
+asgiref==3.8.1
+asyncpg==0.30.0
+click==8.1.8
+colorama==0.4.6
+Django==5.2
+django-cors-headers==4.7.0
+djangorestframework==3.16.0
+dotenv==0.9.9
+h11==0.16.0
+psycopg==3.2.6
+psycopg-binary==3.2.6
+python-dotenv==1.1.0
+sqlparse==0.5.3
+typing_extensions==4.13.2
+tzdata==2025.2
+uvicorn==0.34.2

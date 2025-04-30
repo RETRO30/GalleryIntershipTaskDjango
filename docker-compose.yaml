@@ -1,0 +1,52 @@
+version: '3.9'
+
+services:
+  database:
+    image: postgres:17
+    restart: always
+    user: postgres
+    environment:
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_NAME}
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    expose:
+      - "${DATABASE_PORT}:5432"
+    healthcheck:
+      test: /usr/bin/pg_isready
+      start_period: 5s
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      DOCKER: docker
+      DATABASE_HOST: database
+      DATABASE_PORT: ${DATABASE_PORT}
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_NAME: ${DATABASE_NAME}
+      DJANGO_SECRET_KEY: "${DJANGO_SECRET_KEY}"
+    ports:
+      - "${BACKEND_PORT}:8000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    build:
+        context: ./frontend-gallary
+        dockerfile: Dockerfile
+        args:
+          VITE_API_URL: ${API_URL}
+    restart: always
+    ports:
+      - "${FRONTEND_PORT}:5173"
+
+volumes:
+  postgres_data:
